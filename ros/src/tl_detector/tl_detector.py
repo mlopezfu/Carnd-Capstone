@@ -167,6 +167,8 @@ class TLDetector(object):
 		if(self.pose):
 			car_position = self.get_closest_waypoint(self.pose.pose)
 			#rospy.loginfo('car_position %s', car_position)
+		else:
+			return -1, TrafficLight.UNKNOWN
 
 		for light_stop_position in stop_line_positions:
 			light_stop_pose = Pose()
