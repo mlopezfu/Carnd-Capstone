@@ -47,16 +47,30 @@ roslaunch launch/styx.launch
 ```
 4. Run the simulator
 
+These are my settings for the simulator. If I use another resolution I have problems with performance on PID.
+
+![Sufficient](./img/simulator_setting.png)
 
 # System Architecture
 The following is a system architecture diagram showing the ROS nodes and topics used in the project.
 ![architecture](https://d17h27t6h515a5.cloudfront.net/topher/2017/September/59b6d115_final-project-ros-graph-v2/final-project-ros-graph-v2.png)
 
 ## Waypoint Updater
-The purpose of waypoint updater is to update the target velocity property of each waypoint based on traffic light and obstacle detection data. The target veloicty at normal situdation is given from `waypoint_loader` node. If the red light is detected, we genetated stopping trajectory considering vehicle's deceleration limits. 
+I have follow the guideline on <a href="https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/e1f2a5cf-c697-4880-afb2-b88f3f83d07b">Waypoint Updater Node Overview</a>  and Waypoint <a href="https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/afb9f3b2-58d7-4ec6-88f3-fc4f84d9a8a1">Updater Node Revisited</a> 
 
-## Waypoint Follower
-The longitudinal target velocity was set in `waypoint_updater` node. This node determine the target yawrate to keep the lane by using pure-pursuit algorithm.
+The eventual purpose of this node is to publish a fixed number of waypoints ahead of the vehicle with the correct target velocities, depending on traffic lights and obstacles. The goal for the first version of the node should be simply to subscribe to the topics
+
+/base_waypoints
+/current_pose
+
+and publish a list of waypoints to
+
+/final_waypoints
+
+After that the traffic light detection has to be developed. At the beggining, info from the simulator can be used, but after that, image recognition must be used.
+
+Once traffic light detection is working properly, you can incorporate the traffic light data into your waypoint updater node. To do this, you will need to add a subscriber for the /traffic_waypoint topic and implement the traffic_cb callback for this subscriber.
+
 
 ## Traffic Light Detection
 I have tried some classification with Neural Networks, but when I tried to run the simulator on them, then everything begin to slow down and the car goes off road.
