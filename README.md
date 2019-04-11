@@ -95,6 +95,8 @@ Even when the traffic light is far enough, the red light can be detected.
 ![Sufficient](./img/tl_small_color.png)
 ![Sufficient](./img/tl_small_binary.png)
 
+A notebook is included, with some test performed on images captured from the simulator.
+
 
 ## Final lap
 
