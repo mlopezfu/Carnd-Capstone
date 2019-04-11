@@ -1,6 +1,8 @@
 
 This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. 
 
+Individual submission of Miguel Angel Lopez Fuster. mlopezfu@gmail.com on Udacity
+
 I have developed the system with the native installation. **One** of the two installation options, either native **or** docker installation.
 
 You can look for more info on the original link https://github.com/udacity/CarND-Capstone
