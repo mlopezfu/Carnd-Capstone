@@ -1,6 +1,9 @@
-This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. For more information about the project, see the project introduction [here](https://classroom.udacity.com/nanodegrees/nd013/parts/6047fe34-d93c-4f50-8336-b70ef10cb4b2/modules/e1a23b06-329a-4684-a717-ad476f0d8dff/lessons/462c933d-9f24-42d3-8bdc-a08a5fc866e4/concepts/5ab4b122-83e6-436d-850f-9f4d26627fd9).
 
-Please use **one** of the two installation options, either native **or** docker installation.
+This is the project repo for the final project of the Udacity Self-Driving Car Nanodegree: Programming a Real Self-Driving Car. 
+
+I have developed the system with the native installation. **One** of the two installation options, either native **or** docker installation.
+
+You can look for more info on the original link https://github.com/udacity/CarND-Capstone
 
 ### Native Installation
 
@@ -19,18 +22,6 @@ Please use **one** of the two installation options, either native **or** docker 
   * Use this option to install the SDK on a workstation that already has ROS installed: [One Line SDK Install (binary)](https://bitbucket.org/DataspeedInc/dbw_mkz_ros/src/81e63fcc335d7b64139d7482017d6a97b405e250/ROS_SETUP.md?fileviewer=file-view-default)
 * Download the [Udacity Simulator](https://github.com/udacity/CarND-Capstone/releases).
 
-### Docker Installation
-[Install Docker](https://docs.docker.com/engine/installation/)
-
-Build the docker container
-```bash
-docker build . -t capstone
-```
-
-Run the docker file
-```bash
-docker run -p 4567:4567 -v $PWD:/capstone -v /tmp/log:/root/.ros/ --rm -it capstone
-```
 
 ### Port Forwarding
 To set up port forwarding, please refer to the [instructions from term 2](https://classroom.udacity.com/nanodegrees/nd013/parts/40f38239-66b6-46ec-ae68-03afd8a601c8/modules/0949fca6-b379-42af-a919-ee50aa304e6a/lessons/f758c44c-5e40-4e01-93b5-1a82aa4e044f/concepts/16cf4a78-4fc7-49e1-8621-3450ca938b77)
@@ -56,19 +47,50 @@ roslaunch launch/styx.launch
 ```
 4. Run the simulator
 
-### Real world testing
-1. Download [training bag](https://s3-us-west-1.amazonaws.com/udacity-selfdrivingcar/traffic_light_bag_file.zip) that was recorded on the Udacity self-driving car.
-2. Unzip the file
-```bash
-unzip traffic_light_bag_file.zip
-```
-3. Play the bag file
-```bash
-rosbag play -l traffic_light_bag_file/traffic_light_training.bag
-```
-4. Launch your project in site mode
-```bash
-cd CarND-Capstone/ros
-roslaunch launch/site.launch
-```
-5. Confirm that traffic light detection works on real life images
+
+# System Architecture
+The following is a system architecture diagram showing the ROS nodes and topics used in the project.
+![architecture](https://d17h27t6h515a5.cloudfront.net/topher/2017/September/59b6d115_final-project-ros-graph-v2/final-project-ros-graph-v2.png)
+
+## Waypoint Updater
+The purpose of waypoint updater is to update the target velocity property of each waypoint based on traffic light and obstacle detection data. The target veloicty at normal situdation is given from `waypoint_loader` node. If the red light is detected, we genetated stopping trajectory considering vehicle's deceleration limits. 
+
+## Waypoint Follower
+The longitudinal target velocity was set in `waypoint_updater` node. This node determine the target yawrate to keep the lane by using pure-pursuit algorithm.
+
+## Traffic Light Detection
+I have tried some classification with Neural Networks, but when I tried to run the simulator on them, then everything begin to slow down and the car goes off road.
+
+I have developed this on my computer so I have to look for a quickest way to detect the red light.
+
+Since we know the locations of the traffic lights and the car pose, it is posible to reduce the number of times you look for traffic light.
+When its needed to look for it, its quick enough to make a color search.
+The most important color is red, wich has two separated ranges in HSV space.
+![Sufficient](./img/hsv2rgb.png)
+
+https://en.wikipedia.org/wiki/HSL_and_HSV#HSV_to_RGB
+
+Once the ranges are defined, a mask can be calculated, obtaining the following results:
+![Sufficient](./img/tl_big_color.png)
+![Sufficient](./img/tl_big_binary.png)
+
+Where the numbers are the total of binary points in the mask, and the points for lower and upper ranges.
+
+Even when the traffic light is far enough, the red light can be detected.
+
+![Sufficient](./img/tl_small_color.png)
+![Sufficient](./img/tl_small_binary.png)
+
+
+## Final lap
+
+After that, the autonomous driving is achieved with good perfomance on the development computer.
+
+ <a href="http://www.youtube.com/watch?feature=player_embedded&v=oahyKMsqtmY
+" target="_blank"><img src="http://img.youtube.com/vi/oahyKMsqtmY/0.jpg" 
+alt="path planning" width="600" border="10" /></a>
+
+ 
+ Quicktime recording of the desktop introduces charge on the CPU so more difficult for the computer to have the virtual machine, simulator and quicktime running at the same time whitout affect the car trajectory.
+
+
